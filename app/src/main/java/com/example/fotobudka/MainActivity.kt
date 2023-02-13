@@ -18,6 +18,7 @@ import android.os.HandlerThread
 import android.view.Surface
 import android.view.TextureView
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -25,6 +26,8 @@ import kotlinx.coroutines.*
 import java.io.File
 import java.io.FileOutputStream
 import java.util.*
+import java.util.Base64
+
 
 
 class MainActivity : AppCompatActivity() {
@@ -102,13 +105,10 @@ class MainActivity : AppCompatActivity() {
                 buffer.get(bytes)
 
 
-                var file = File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "$seriesName$count.jpeg")
+                val encodedString: String = Base64.getEncoder().encodeToString(bytes)
 
-                var opStream = FileOutputStream(file)
+                var txtFile = File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "$seriesName$count.txt").writeText(encodedString)
 
-                opStream.write(bytes)
-
-                opStream.close()
                 image.close()
 
                 val sound = MediaActionSound()
