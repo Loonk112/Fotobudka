@@ -22,6 +22,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.*
+import retrofit2.http.POST
 import java.io.File
 import java.io.FileOutputStream
 import java.util.*
@@ -51,8 +52,12 @@ class MainActivity : AppCompatActivity() {
         handlerThread.quitSafely()
     }
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
         setContentView(R.layout.activity_main)
         get_permissions()
 
