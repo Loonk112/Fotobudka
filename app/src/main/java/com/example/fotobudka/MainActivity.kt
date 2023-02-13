@@ -18,16 +18,14 @@ import android.os.HandlerThread
 import android.view.Surface
 import android.view.TextureView
 import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.*
 import java.io.File
-import java.io.FileOutputStream
 import java.util.*
 import java.util.Base64
-
+import kotlin.collections.ArrayList
 
 
 class MainActivity : AppCompatActivity() {
@@ -41,11 +39,14 @@ class MainActivity : AppCompatActivity() {
     lateinit var cameraDevice: CameraDevice
     lateinit var imageReader: ImageReader
 
+
     var seriesName = ""
     var targetCount: Int = 0
     var delay = 0
     var count: Int = 0
     var job: Job? = null
+
+    lateinit var pictures: ArrayList<String>
 
     override fun onDestroy() {
         super.onDestroy()
@@ -107,7 +108,7 @@ class MainActivity : AppCompatActivity() {
 
                 val encodedString: String = Base64.getEncoder().encodeToString(bytes)
 
-                var txtFile = File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "$seriesName$count.txt").writeText(encodedString)
+                pictures.add(encodedString)
 
                 image.close()
 
@@ -137,9 +138,8 @@ class MainActivity : AppCompatActivity() {
                                 capReq = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE)
                                 capReq.addTarget(imageReader.surface)
                                 cameraCaptureSession.capture(capReq.build(),null,null)
-
                             }
-                            seriesName = ""
+                            sender()
                         }
                     } else {
                         Toast.makeText(context, "Photo taking in progress...", Toast.LENGTH_SHORT).show()
@@ -152,6 +152,13 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+    }
+
+    fun sender() {
+
+
+        //Czyszczenie zdjęć
+        pictures = ArrayList<String>()
     }
 
     @SuppressLint("MissingPermission")
