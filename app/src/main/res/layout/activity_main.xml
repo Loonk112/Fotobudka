@@ -5,7 +5,7 @@
     android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
+    android:background="@color/white"
     tools:context=".MainActivity">
 
     <LinearLayout
@@ -19,33 +19,37 @@
             android:layout_height="0dp"
             android:layout_weight="1">
             <TextView
+                android:id="@+id/time"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="5"
                 android:text="Time:"
-                android:textSize="30dp"
+                android:textSize="30sp"
                 android:gravity="center_vertical"
-                android:textColor="@color/teal_200"/>
+                android:textColor="@color/teal_200"
+                tools:ignore="HardcodedText,NestedWeights" />
             <EditText
                 android:textColor="@color/purple_200"
                 android:padding="10dp"
-                android:text="0.6"
-                android:textSize="30dp"
+                android:textSize="30sp"
                 android:id="@+id/timeIn"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="4"
                 android:gravity="end"
                 android:ems="10"
-                android:inputType="numberDecimal" />
+                android:inputType="numberDecimal"
+                android:importantForAutofill="no"
+                tools:ignore="LabelFor" />
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="s"
-                android:textSize="30dp"
+                android:textSize="30sp"
                 android:gravity="center_vertical"
-                android:textColor="@color/teal_200"/>
+                android:textColor="@color/teal_200"
+                tools:ignore="HardcodedText" />
 
         </LinearLayout>
         <LinearLayout
@@ -57,22 +61,24 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="Count:"
-                android:textSize="30dp"
+                android:textSize="30sp"
                 android:gravity="center_vertical"
-                android:textColor="@color/teal_200"/>
+                android:textColor="@color/teal_200"
+                tools:ignore="HardcodedText,NestedWeights" />
 
             <EditText
                 android:id="@+id/countIn"
                 android:textColor="@color/purple_200"
                 android:padding="10dp"
-                android:text="5"
-                android:textSize="30dp"
+                android:textSize="30sp"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:ems="10"
-                android:inputType="number" />
+                android:inputType="number"
+                android:importantForAutofill="no"
+                tools:ignore="LabelFor" />
 
         </LinearLayout>
         <LinearLayout
@@ -84,23 +90,25 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="Name:"
-                android:textSize="30dp"
+                android:textSize="30sp"
                 android:gravity="center_vertical"
-                android:textColor="@color/teal_200"/>
+                android:textColor="@color/teal_200"
+                tools:ignore="HardcodedText,NestedWeights" />
 
             <EditText
                 android:id="@+id/nameIn"
                 android:textColor="@color/purple_200"
-                android:textColorHint="@color/purple_500"
                 android:padding="10dp"
-                android:hint="Series Name"
-                android:textSize="30dp"
+                android:textSize="30sp"
                 android:text=""
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
-                android:ems="10" />
+                android:ems="10"
+                android:importantForAutofill="no"
+                android:inputType="textCapWords"
+                tools:ignore="LabelFor" />
 
         </LinearLayout>
     </LinearLayout>
@@ -129,6 +137,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cameraPreview"
-        app:srcCompat="@drawable/ic_baseline_camera_24" />
+        app:srcCompat="@drawable/ic_baseline_camera_24"
+        android:contentDescription="Take photo button"
+        tools:ignore="HardcodedText" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

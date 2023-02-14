@@ -12,7 +12,6 @@ import android.hardware.camera2.CaptureRequest
 import android.media.ImageReader
 import android.media.MediaActionSound
 import android.os.Bundle
-import android.os.Environment
 import android.os.Handler
 import android.os.HandlerThread
 import android.view.Surface
@@ -22,31 +21,31 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.*
-import java.io.File
-import java.util.*
 import java.util.Base64
-import kotlin.collections.ArrayList
 
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var capReq: CaptureRequest.Builder
-    lateinit var handler: Handler
-    lateinit var handlerThread: HandlerThread
-    lateinit var cameraManager: CameraManager
-    lateinit var textureView: TextureView
-    lateinit var cameraCaptureSession: CameraCaptureSession
-    lateinit var cameraDevice: CameraDevice
-    lateinit var imageReader: ImageReader
+    private lateinit var capReq: CaptureRequest.Builder
+    private lateinit var handler: Handler
+    private lateinit var handlerThread: HandlerThread
+    private lateinit var cameraManager: CameraManager
+    private lateinit var textureView: TextureView
+    private lateinit var cameraCaptureSession: CameraCaptureSession
+    private lateinit var cameraDevice: CameraDevice
+    private lateinit var imageReader: ImageReader
 
+    private lateinit var timeIn: EditText
+    private lateinit var countIn: EditText
+    private lateinit var nameIn: EditText
 
-    var seriesName = ""
-    var targetCount: Int = 0
-    var delay = 0
-    var count: Int = 0
-    var job: Job? = null
+    private var seriesName = ""
+    private var targetCount: Int = 0
+    private var delay = 0
+    private var count: Int = 0
+    private var job: Job? = null
 
-    lateinit var pictures: ArrayList<String>
+    private var pictures = ArrayList<String>()
 
     override fun onDestroy() {
         super.onDestroy()
@@ -55,10 +54,20 @@ class MainActivity : AppCompatActivity() {
         handlerThread.quitSafely()
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        get_permissions()
+        getPermissions()
+
+        timeIn = findViewById(R.id.timeIn)
+        countIn = findViewById(R.id.countIn)
+        nameIn = findViewById(R.id.nameIn)
+
+        // Default values in! //TODO: Set the correct values here!
+        timeIn.setText("0.8")
+        countIn.setText("3")
+        nameIn.setText("Banner")
 
         textureView = findViewById(R.id.cameraPreview)
         cameraManager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
@@ -72,7 +81,7 @@ class MainActivity : AppCompatActivity() {
                 width: Int,
                 height: Int
             ) {
-                open_camera()
+                openCamera()
             }
 
             override fun onSurfaceTextureSizeChanged(
@@ -95,36 +104,29 @@ class MainActivity : AppCompatActivity() {
 
 
         imageReader = ImageReader.newInstance(1080,1920, ImageFormat.JPEG, 1)
-        imageReader.setOnImageAvailableListener(object: ImageReader.OnImageAvailableListener{
-            override fun onImageAvailable(reader: ImageReader?) {
+        //Was switched to lambda
+        //imageReader.setOnImageAvailableListener(object: ImageReader.OnImageAvailableListener{
+        //            override fun onImageAvailable(reader: ImageReader?) {
+        imageReader.setOnImageAvailableListener({ reader ->
+            val image = reader?.acquireLatestImage()
 
+            val buffer = image!!.planes[0].buffer
+            val bytes = ByteArray(buffer.remaining())
 
-                var image = reader?.acquireLatestImage()
+            image.close()
 
-                var buffer = image!!.planes[0].buffer
-                var bytes = ByteArray(buffer.remaining())
-                buffer.get(bytes)
+            val encodedString: String = Base64.getEncoder().encodeToString(bytes)
 
+            pictures.add(encodedString)
 
-                val encodedString: String = Base64.getEncoder().encodeToString(bytes)
-
-                pictures.add(encodedString)
-
-                image.close()
-
-                val sound = MediaActionSound()
-                sound.play(MediaActionSound.SHUTTER_CLICK)
-            }
+            val sound = MediaActionSound()
+            sound.play(MediaActionSound.SHUTTER_CLICK)
         }, handler)
-
-        val countIn =findViewById<EditText>(R.id.countIn)
-        val delayIn =findViewById<EditText>(R.id.timeIn)
-        val nameIn =findViewById<EditText>(R.id.nameIn)
 
         findViewById<FloatingActionButton>(R.id.floatingActionButton).apply {
             setOnClickListener {
                 targetCount = countIn.text.toString().toInt()
-                delay = (delayIn.text.toString().toDouble() * 1000).toInt()
+                delay = (timeIn.text.toString().toDouble() * 1000).toInt()
                 seriesName = nameIn.text.toString()
 
                 if (targetCount > 0 && delay >= 100 && seriesName != "") {
@@ -132,6 +134,7 @@ class MainActivity : AppCompatActivity() {
                     val currentJob = job
                     if (currentJob == null || currentJob.isCompleted) {
                         job = GlobalScope.launch(Dispatchers.IO) {
+                            pictures = ArrayList()
                             for (i in 0..targetCount) {
                                 count = i
                                 delay(delay.toLong())
@@ -155,22 +158,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun sender() {
-
-
-        //Czyszczenie zdjęć
-        pictures = ArrayList<String>()
+        //TODO: Send dat from here
     }
 
     @SuppressLint("MissingPermission")
-    fun open_camera() {
+    fun openCamera() {
         cameraManager.openCamera(cameraManager.cameraIdList[0], object : CameraDevice.StateCallback() {
             override fun onOpened(camera: CameraDevice) {
                 cameraDevice = camera
 
                 capReq = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW)
-                var surface = Surface(textureView.surfaceTexture)
+                val surface = Surface(textureView.surfaceTexture)
                 capReq.addTarget(surface)
 
+                //TODO: Search for alternative
+                @Suppress("DEPRECATION")
                 cameraDevice.createCaptureSession(listOf(surface, imageReader.surface), object :
                     CameraCaptureSession.StateCallback() {
                     override fun onConfigured(session: CameraCaptureSession) {
@@ -184,9 +186,6 @@ class MainActivity : AppCompatActivity() {
                 }, handler)
             }
 
-            override fun onClosed(camera: CameraDevice) {
-                super.onClosed(camera)
-            }
 
             override fun onDisconnected(camera: CameraDevice) {
 
@@ -198,8 +197,8 @@ class MainActivity : AppCompatActivity() {
         }, handler)
     }
 
-    fun get_permissions() {
-        var permissionsList = mutableListOf<String>()
+    private fun getPermissions() {
+        val permissionsList = mutableListOf<String>()
 
         if (checkSelfPermission(android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             permissionsList.add(android.Manifest.permission.CAMERA)
@@ -224,7 +223,7 @@ class MainActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         grantResults.forEach {
             if (it != PackageManager.PERMISSION_GRANTED) {
-                get_permissions()
+                getPermissions()
             }
         }
     }
