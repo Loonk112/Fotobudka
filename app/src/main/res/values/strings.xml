@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Fotobudka</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="captureFabAltText">Start session</string>
+    <string name="settingsFabAltText">Go to settings</string>
 </resources>
