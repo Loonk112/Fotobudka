@@ -36,7 +36,6 @@ class CaptureFragment : Fragment() {
     private lateinit var settingsFab: FloatingActionButton
     private lateinit var captureFab: FloatingActionButton
 
-    private var count: Int = 0
     private var job: Job? = null
 
     private var pictures = ArrayList<String>()
@@ -49,6 +48,7 @@ class CaptureFragment : Fragment() {
         handlerThread.quitSafely()
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -127,13 +127,13 @@ class CaptureFragment : Fragment() {
                     sound.play(MediaActionSound.START_VIDEO_RECORDING)
                     pictures = ArrayList()
                     for (i in 0 until Keeper.count) {
-                        count = i
                         delay(Keeper.delay.toLong())
                         capReq = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE)
                         capReq.addTarget(imageReader.surface)
                         cameraCaptureSession.capture(capReq.build(),null,null)
                     }
-                    delay(100)
+                    @Suppress("ControlFlowWithEmptyBody")
+                    while (pictures.size<Keeper.count) {/*Waits till all photos are recorder - a safety measure*/}
                     sound.play(MediaActionSound.STOP_VIDEO_RECORDING)
                     captureFab.isEnabled = true
                     settingsFab.isEnabled = true
