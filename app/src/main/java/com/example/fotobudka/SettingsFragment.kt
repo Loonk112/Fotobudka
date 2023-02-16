@@ -1,5 +1,6 @@
 package com.example.fotobudka
 
+import android.graphics.Color
 import android.os.Bundle
 import android.text.TextUtils
 import androidx.fragment.app.Fragment
@@ -21,6 +22,7 @@ class SettingsFragment : Fragment() {
     private lateinit var countIn: TextInputEditText
     private lateinit var nameInLayout: TextInputLayout
     private lateinit var nameIn: TextInputEditText
+    private lateinit var colorsBtn: Button
     private lateinit var saveBtn: Button
 
     override fun onCreateView(
@@ -37,6 +39,14 @@ class SettingsFragment : Fragment() {
         timeIn = view.findViewById(R.id.delayIn)
         countIn = view.findViewById(R.id.countIn)
         nameIn = view.findViewById(R.id.nameIn)
+
+        colorsBtn = view.findViewById(R.id.ChangeColorsBtn)
+        colorsBtn.setBackgroundColor(Color.rgb(Keeper.backR,Keeper.backG,Keeper.backB))
+        colorsBtn.setTextColor(Color.rgb(Keeper.fontR,Keeper.fontG,Keeper.fontB))
+
+        colorsBtn.setOnClickListener {
+            Navigation.findNavController(view).navigate(R.id.action_settingsFragment_to_colorPicker)
+        }
 
         timeIn.addTextChangedListener {
             if (it.toString() == "") {

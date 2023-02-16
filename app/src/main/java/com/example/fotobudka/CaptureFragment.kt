@@ -110,6 +110,8 @@ class CaptureFragment : Fragment() {
             val currentJob = job
             if (currentJob == null || currentJob.isCompleted) {
                 job = GlobalScope.launch(Dispatchers.IO) {
+                    val sound = MediaActionSound()
+                    sound.play(MediaActionSound.START_VIDEO_RECORDING)
                     pictures = ArrayList()
                     for (i in 0 until Keeper.count) {
                         count = i
@@ -118,7 +120,8 @@ class CaptureFragment : Fragment() {
                         capReq.addTarget(imageReader.surface)
                         cameraCaptureSession.capture(capReq.build(),null,null)
                     }
-                    delay(Keeper.delay.toLong())
+                    delay(Keeper.delay.toLong()+100)
+                    sound.play(MediaActionSound.STOP_VIDEO_RECORDING)
                     sender()
                 }
             } else {
