@@ -5,7 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [Settings :: class], version = 1)
+@Database(entities = [Settings :: class], version = 2)
 abstract class AppDb : RoomDatabase() {
 
     abstract fun SettingsDao() : SettingsDao
@@ -23,7 +23,7 @@ abstract class AppDb : RoomDatabase() {
                     context.applicationContext,
                     AppDb::class.java,
                     "app_database"
-                ).build()
+                ).fallbackToDestructiveMigration().build()
                 INSTANCE = instance
                 return instance
             }

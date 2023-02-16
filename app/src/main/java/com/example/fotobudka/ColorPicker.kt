@@ -10,10 +10,16 @@ import android.widget.Button
 import android.widget.SeekBar
 import android.widget.TextView
 import androidx.navigation.Navigation
+import com.example.fotobudka.room.AppDb
+import com.example.fotobudka.room.Settings
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 
 class ColorPicker : Fragment() {
 
+    private lateinit var appDb: AppDb
     private lateinit var exampleView: TextView
     private lateinit var backgroundRValView: TextView
     private lateinit var backgroundRSlider: SeekBar
@@ -36,6 +42,7 @@ class ColorPicker : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_color_picker, container, false)
 
+        appDb = AppDb.getDatabase(view.context)
         exampleView = view.findViewById(R.id.exampleTextView)
         backgroundRValView = view.findViewById(R.id.backRVal)
         backgroundRSlider = view.findViewById(R.id.backRIn)
@@ -52,6 +59,7 @@ class ColorPicker : Fragment() {
         saveBtn = view.findViewById(R.id.saveColorsBtn)
 
         saveBtn.setOnClickListener {
+            saveSettings()
             Navigation.findNavController(view).navigate(R.id.action_colorPicker_to_settingsFragment)
         }
 
@@ -138,6 +146,21 @@ class ColorPicker : Fragment() {
     fun setExample() {
         exampleView.setBackgroundColor(Color.rgb(backgroundRSlider.progress,backgroundGSlider.progress,backgroundBSlider.progress))
         exampleView.setTextColor(Color.rgb(fontRSlider.progress,fontGSlider.progress,fontBSlider.progress))
+    }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    private fun saveSettings() {
+        GlobalScope.launch {
+            coroutineContext.run {
+                val id = 0
+                val delay = Keeper.delay
+                val count = Keeper.count
+                val name = Keeper.name
+                val bgColor = Keeper.getBackHex()
+                val foColor = Keeper.getFontHex()
+                appDb.SettingsDao().insert(Settings(id,delay,count,name,bgColor,foColor))
+            }
+        }
     }
 
 }
