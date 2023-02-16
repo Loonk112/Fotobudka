@@ -10,12 +10,18 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.core.widget.addTextChangedListener
 import androidx.navigation.Navigation
+import com.example.fotobudka.room.AppDb
+import com.example.fotobudka.room.Settings
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 
 class SettingsFragment : Fragment() {
 
+    private lateinit var appDb: AppDb
     private lateinit var timeInLayout: TextInputLayout
     private lateinit var timeIn: TextInputEditText
     private lateinit var countInLayout: TextInputLayout
@@ -31,7 +37,7 @@ class SettingsFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_settings, container, false)
-
+        appDb = AppDb.getDatabase(view.context)
         timeInLayout = view.findViewById(R.id.delayInLayout)
         countInLayout = view.findViewById(R.id.countInLayout)
         nameInLayout = view.findViewById(R.id.nameInLayout)
@@ -88,7 +94,6 @@ class SettingsFragment : Fragment() {
         nameIn.setText(Keeper.name)
 
         saveBtn.setOnClickListener {
-
             if(TextUtils.isEmpty(timeInLayout.error)&&TextUtils.isEmpty(countInLayout.error)&&TextUtils.isEmpty(nameInLayout.error)) {
                 Keeper.delay = (timeIn.text.toString().toDouble()*1000).toInt()
                 Keeper.count = (countIn.text.toString().toInt())
@@ -96,10 +101,26 @@ class SettingsFragment : Fragment() {
                 //TODO:...
                 //Keeper.fontC = ...
                 //Keeper.backC = ...
+                saveSettings()
                 Navigation.findNavController(view).navigate(R.id.action_settingsFragment_to_captureFragment)
             }
         }
 
         return view
+    }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    private fun saveSettings() {
+        GlobalScope.launch {
+            coroutineContext.run {
+                val id = 0
+                val delay = Keeper.delay
+                val count = Keeper.count
+                val name = Keeper.name
+                val bgColor = Keeper.getBackHex()
+                val foColor = Keeper.getFontHex()
+                appDb.SettingsDao().insert(Settings(id,delay,count,name,bgColor,foColor))
+            }
+        }
     }
 }
