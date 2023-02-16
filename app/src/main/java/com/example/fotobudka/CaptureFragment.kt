@@ -15,7 +15,6 @@ import android.os.Handler
 import android.os.HandlerThread
 import android.view.*
 import androidx.fragment.app.Fragment
-import android.widget.Toast
 import androidx.navigation.Navigation
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.*
@@ -33,6 +32,9 @@ class CaptureFragment : Fragment() {
     private lateinit var cameraCaptureSession: CameraCaptureSession
     private lateinit var cameraDevice: CameraDevice
     private lateinit var imageReader: ImageReader
+
+    private lateinit var settingsFab: FloatingActionButton
+    private lateinit var captureFab: FloatingActionButton
 
     private var count: Int = 0
     private var job: Job? = null
@@ -59,6 +61,14 @@ class CaptureFragment : Fragment() {
         handlerThread.start()
         handler = Handler((handlerThread).looper)
 
+        settingsFab = view.findViewById(R.id.settingsFAB)
+        captureFab = view.findViewById(R.id.captureFAB)
+
+
+        settingsFab.setOnClickListener {
+            Navigation.findNavController(view).navigate(R.id.action_captureFragment_to_settingsFragment)
+        }
+
         textureView.surfaceTextureListener = object : TextureView.SurfaceTextureListener {
             override fun onSurfaceTextureAvailable(
                 surface: SurfaceTexture,
@@ -84,6 +94,7 @@ class CaptureFragment : Fragment() {
 
             }
 
+
         }
 
         imageReader = ImageReader.newInstance(1080,1920, ImageFormat.JPEG, 1)
@@ -106,10 +117,12 @@ class CaptureFragment : Fragment() {
             sound.play(MediaActionSound.SHUTTER_CLICK)
         }, handler)
 
-        view.findViewById<FloatingActionButton>(R.id.captureFAB).setOnClickListener {
+        captureFab.setOnClickListener {
             val currentJob = job
             if (currentJob == null || currentJob.isCompleted) {
-                job = GlobalScope.launch(Dispatchers.IO) {
+                job = GlobalScope.launch(Dispatchers.Main) {
+                    captureFab.isEnabled = false
+                    settingsFab.isEnabled = false
                     val sound = MediaActionSound()
                     sound.play(MediaActionSound.START_VIDEO_RECORDING)
                     pictures = ArrayList()
@@ -120,18 +133,15 @@ class CaptureFragment : Fragment() {
                         capReq.addTarget(imageReader.surface)
                         cameraCaptureSession.capture(capReq.build(),null,null)
                     }
-                    delay(Keeper.delay.toLong()+100)
+                    delay(100)
                     sound.play(MediaActionSound.STOP_VIDEO_RECORDING)
+                    captureFab.isEnabled = true
+                    settingsFab.isEnabled = true
                     sender()
                 }
-            } else {
-                Toast.makeText(context, "Photo taking in progress...", Toast.LENGTH_SHORT).show()
             }
         }
 
-        view.findViewById<FloatingActionButton>(R.id.settingsFAB).setOnClickListener {
-            Navigation.findNavController(view).navigate(R.id.action_captureFragment_to_settingsFragment)
-        }
 
         return view
     }
