@@ -5,130 +5,14 @@
     android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
     tools:context=".MainActivity">
 
-    <LinearLayout
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragmentContainerView"
+        android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:orientation="vertical"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/cameraPreview">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="5"
-                android:text="Time:"
-                android:textSize="30dp"
-                android:gravity="center_vertical"
-                android:textColor="@color/teal_200"/>
-            <EditText
-                android:textColor="@color/purple_200"
-                android:padding="10dp"
-                android:text="0.6"
-                android:textSize="30dp"
-                android:id="@+id/timeIn"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="4"
-                android:gravity="end"
-                android:ems="10"
-                android:inputType="numberDecimal" />
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="s"
-                android:textSize="30dp"
-                android:gravity="center_vertical"
-                android:textColor="@color/teal_200"/>
-
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="Count:"
-                android:textSize="30dp"
-                android:gravity="center_vertical"
-                android:textColor="@color/teal_200"/>
-
-            <EditText
-                android:id="@+id/countIn"
-                android:textColor="@color/purple_200"
-                android:padding="10dp"
-                android:text="5"
-                android:textSize="30dp"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center_vertical"
-                android:ems="10"
-                android:inputType="number" />
-
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="Name:"
-                android:textSize="30dp"
-                android:gravity="center_vertical"
-                android:textColor="@color/teal_200"/>
-
-            <EditText
-                android:id="@+id/nameIn"
-                android:textColor="@color/purple_200"
-                android:textColorHint="@color/purple_500"
-                android:padding="10dp"
-                android:hint="Series Name"
-                android:textSize="30dp"
-                android:text=""
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center_vertical"
-                android:ems="10" />
-
-        </LinearLayout>
-    </LinearLayout>
-
-    <TextureView
-        android:id="@+id/cameraPreview"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.5"
-        tools:ignore="Suspicious0dp" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:fabCustomSize="100dp"
-        app:maxImageSize="100dp"
-        android:clickable="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cameraPreview"
-        app:srcCompat="@drawable/ic_baseline_camera_24" />
-
+        android:layout_height="match_parent"
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/main_nav" />
 </androidx.constraintlayout.widget.ConstraintLayout>

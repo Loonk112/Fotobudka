@@ -1,3 +1,22 @@
 <resources>
     <string name="app_name">Fotobudka</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="captureFabAltText">Start session</string>
+    <string name="settingsFabAltText">Go to settings</string>
+    <string name="ExampleText">Example text</string>
+    <string name="banner_name">Banner Name</string>
+    <string name="input_banner_name">Input banner name</string>
+    <string name="delay_between_photos_s">Delay between photos (s)</string>
+    <string name="input_delay_time">Input delay time</string>
+    <string name="photo_count">Photo count</string>
+    <string name="input_photo_count">Input photo count</string>
+    <string name="banner_color">Banner Color</string>
+    <string name="pick_color">Pick Color</string>
+    <string name="save">Save</string>
+    <string name="background">Background</string>
+    <string name="red">Red:</string>
+    <string name="green">Green:</string>
+    <string name="blue">Blue:</string>
+    <string name="font">Font</string>
 </resources>
