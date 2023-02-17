@@ -15,14 +15,15 @@ import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
 import android.os.HandlerThread
+import android.util.Log
 import android.view.Surface
 import android.view.TextureView
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.*
-import retrofit2.http.POST
 import java.io.File
 import java.io.FileOutputStream
 import java.util.*
@@ -56,7 +57,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
 
         setContentView(R.layout.activity_main)
         get_permissions()
@@ -150,7 +150,12 @@ class MainActivity : AppCompatActivity() {
                         Toast.makeText(context, "Photo taking in progress...", Toast.LENGTH_SHORT).show()
                     }
                 } else {
-                    Toast.makeText(context, "Wrong inputs", Toast.LENGTH_SHORT).show()
+
+                        lifecycleScope.launch {
+                            val pdfId = dataPdf()
+                            Toast.makeText(context, pdfId.await(), Toast.LENGTH_SHORT).show()
+                        }
+
                 }
 
 

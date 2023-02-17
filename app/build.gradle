@@ -52,4 +52,8 @@ dependencies {
     implementation("com.github.kittinunf.fuel:fuel:2.3.1")
     implementation("com.github.kittinunf.fuel:fuel-gson:2.3.1")
     implementation("com.google.code.gson:gson:2.8.6")
+
+    // to run asynchronus functions
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.2.0-alpha02"
+
 }
