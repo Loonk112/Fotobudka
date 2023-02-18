@@ -56,7 +56,8 @@ class SettingsFragment : Fragment() {
 
         timeIn.addTextChangedListener {
             if (it.toString() == "") {
-                timeInLayout.error = "Delay between photos can not be empty"
+                timeIn.setText("0")
+                timeInLayout.error = "Delay between photos must be over 100ms"
             }
             else if (it.toString().toDouble() < 0.1) {
                 timeInLayout.error = "Delay between photos must be over 100ms"
