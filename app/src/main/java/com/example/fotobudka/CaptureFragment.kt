@@ -3,6 +3,7 @@ package com.example.fotobudka
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.ImageFormat
 import android.graphics.SurfaceTexture
@@ -12,6 +13,7 @@ import android.hardware.camera2.CameraManager
 import android.hardware.camera2.CaptureRequest
 import android.media.ImageReader
 import android.media.MediaActionSound
+import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
@@ -45,7 +47,7 @@ class CaptureFragment : Fragment() {
 
     private var job: Job? = null
 
-    private var pictures = ArrayList<ByteArray>()
+    private var pictures = ArrayList<String>()
 
 
     override fun onDestroy() {
@@ -123,7 +125,7 @@ class CaptureFragment : Fragment() {
             val encodedString: String = Base64.encodeToString(bytes, Base64.DEFAULT);
             println(encodedString)
 
-            pictures.add(bytes)
+            pictures.add(encodedString)
 
 
             val sound = MediaActionSound()
@@ -153,7 +155,9 @@ class CaptureFragment : Fragment() {
 
 //                    send data via http
                     val pdfId = sendHttp(pictures,Keeper.name,Keeper.getBackHex(),Keeper.getFontHex())
-                    Toast.makeText(context, pdfId.await(), Toast.LENGTH_SHORT).show()
+                    val url = "https://photoapi-production.up.railway.app/pdf/"+pdfId.await()
+                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+
 
                 }
             }

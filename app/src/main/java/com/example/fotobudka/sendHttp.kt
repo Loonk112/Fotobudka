@@ -30,8 +30,12 @@ fun sendHttp(
                 .jsonBody(Gson().toJson(objectToSend).toString())
                 .responseString()
 
+        var (id,error)=result
+        id=id.toString()
+        id=id.drop(1)
+        id=id.dropLast(1)
 
-    return@async result.toString()
+    return@async id
 }
 
 
