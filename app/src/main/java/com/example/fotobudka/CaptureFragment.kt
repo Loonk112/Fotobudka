@@ -1,7 +1,10 @@
+@file:OptIn(DelicateCoroutinesApi::class)
 package com.example.fotobudka
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.ImageFormat
 import android.graphics.SurfaceTexture
 import android.hardware.camera2.CameraCaptureSession
@@ -10,16 +13,19 @@ import android.hardware.camera2.CameraManager
 import android.hardware.camera2.CaptureRequest
 import android.media.ImageReader
 import android.media.MediaActionSound
+import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
 import android.os.HandlerThread
 import android.util.Base64
 import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.*
+import java.util.*
 import java.io.File
 import java.io.FileOutputStream
 import kotlin.collections.ArrayList
@@ -41,7 +47,7 @@ class CaptureFragment : Fragment() {
 
     private var job: Job? = null
 
-    private var pictures = ArrayList<ByteArray>()
+    private var pictures = ArrayList<String>()
 
 
     override fun onDestroy() {
@@ -51,7 +57,7 @@ class CaptureFragment : Fragment() {
         handlerThread.quitSafely()
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -119,7 +125,8 @@ class CaptureFragment : Fragment() {
             val encodedString: String = Base64.encodeToString(bytes, Base64.DEFAULT);
             println(encodedString)
 
-            pictures.add(bytes)
+            pictures.add(encodedString)
+
 
             val sound = MediaActionSound()
             sound.play(MediaActionSound.SHUTTER_CLICK)
@@ -145,18 +152,20 @@ class CaptureFragment : Fragment() {
                     sound.play(MediaActionSound.STOP_VIDEO_RECORDING)
                     captureFab.isEnabled = true
                     settingsFab.isEnabled = true
-                    sender()
+
+//                    send data via http
+                    val pdfId = sendHttp(pictures,Keeper.name,Keeper.getBackHex(),Keeper.getFontHex())
+                    val url = "https://photoapi-production.up.railway.app/pdf/"+pdfId.await()
+                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+
+
                 }
             }
         }
 
-
         return view
     }
 
-    private fun sender() {
-        //TODO: Send dat from here
-    }
 
     @SuppressLint("MissingPermission")
     fun openCamera() {

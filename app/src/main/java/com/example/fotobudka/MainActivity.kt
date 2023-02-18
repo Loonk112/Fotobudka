@@ -15,13 +15,16 @@ class MainActivity : AppCompatActivity() {
     lateinit var appDb: AppDb
     lateinit var settings: Settings
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         appDb = AppDb.getDatabase(this)
         test()
+
         setContentView(R.layout.activity_main)
         getPermissions()
-
 
         Keeper.delay = settings.delay
         Keeper.count = settings.count
