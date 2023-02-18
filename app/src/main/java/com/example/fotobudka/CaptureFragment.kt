@@ -13,8 +13,10 @@ import android.hardware.camera2.CaptureRequest
 import android.media.ImageReader
 import android.media.MediaActionSound
 import android.os.Bundle
+import android.os.Environment
 import android.os.Handler
 import android.os.HandlerThread
+import android.util.Base64
 import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -22,6 +24,9 @@ import androidx.navigation.Navigation
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.*
 import java.util.*
+import java.io.File
+import java.io.FileOutputStream
+import kotlin.collections.ArrayList
 
 
 class CaptureFragment : Fragment() {
@@ -40,7 +45,7 @@ class CaptureFragment : Fragment() {
 
     private var job: Job? = null
 
-    private var pictures = ArrayList<String>()
+    private var pictures = ArrayList<ByteArray>()
 
 
     override fun onDestroy() {
@@ -99,7 +104,7 @@ class CaptureFragment : Fragment() {
 
         }
 
-        imageReader = ImageReader.newInstance(1080,1920, ImageFormat.JPEG, 1)
+        imageReader = ImageReader.newInstance(600,600, ImageFormat.JPEG, 1)
         //Was switched to lambda
         //imageReader.setOnImageAvailableListener(object: ImageReader.OnImageAvailableListener{
         //            override fun onImageAvailable(reader: ImageReader?) {
@@ -108,12 +113,17 @@ class CaptureFragment : Fragment() {
 
             val buffer = image!!.planes[0].buffer
             val bytes = ByteArray(buffer.remaining())
+            buffer.get(bytes)
 
+            var file = File(requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES),"img.jpeg")
+            var output = FileOutputStream(file)
+            output.write(bytes)
+            output.close()
             image.close()
+            val encodedString: String = Base64.encodeToString(bytes, Base64.DEFAULT);
+            println(encodedString)
 
-            val encodedString: String = Base64.getEncoder().encodeToString(bytes)
-
-            pictures.add(encodedString)
+            pictures.add(bytes)
 
 
             val sound = MediaActionSound()
