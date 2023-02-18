@@ -2,21 +2,7 @@ package com.example.fotobudka
 
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.os.Environment
-import android.os.Handler
-import android.os.HandlerThread
-import android.util.Log
-import android.view.Surface
-import android.view.TextureView
-import android.widget.EditText
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import kotlinx.coroutines.*
-import java.io.File
-import java.io.FileOutputStream
-import java.util.*
 import com.example.fotobudka.room.AppDb
 import com.example.fotobudka.room.Settings
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -39,12 +25,6 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
         getPermissions()
-
-
-//                        lifecycleScope.launch {
-//                            val pdfId = dataPdf()
-//                            Toast.makeText(context, pdfId.await(), Toast.LENGTH_SHORT).show()
-//                        }
 
         Keeper.delay = settings.delay
         Keeper.count = settings.count

@@ -1,7 +1,9 @@
+@file:OptIn(DelicateCoroutinesApi::class)
 package com.example.fotobudka
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.ImageFormat
 import android.graphics.SurfaceTexture
 import android.hardware.camera2.CameraCaptureSession
@@ -14,12 +16,12 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
 import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.*
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 class CaptureFragment : Fragment() {
@@ -48,7 +50,7 @@ class CaptureFragment : Fragment() {
         handlerThread.quitSafely()
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -113,6 +115,7 @@ class CaptureFragment : Fragment() {
 
             pictures.add(encodedString)
 
+
             val sound = MediaActionSound()
             sound.play(MediaActionSound.SHUTTER_CLICK)
         }, handler)
@@ -137,18 +140,18 @@ class CaptureFragment : Fragment() {
                     sound.play(MediaActionSound.STOP_VIDEO_RECORDING)
                     captureFab.isEnabled = true
                     settingsFab.isEnabled = true
-                    sender()
+
+//                    send data via http
+                    val pdfId = sendHttp(pictures,Keeper.name,Keeper.getBackHex(),Keeper.getFontHex())
+                    Toast.makeText(context, pdfId.await(), Toast.LENGTH_SHORT).show()
+
                 }
             }
         }
 
-
         return view
     }
 
-    private fun sender() {
-        //TODO: Send dat from here
-    }
 
     @SuppressLint("MissingPermission")
     fun openCamera() {
